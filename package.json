@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Catedratec api test project",
   "main": "index.js",
-  
   "author": "Y0z64",
   "license": "MIT",
   "dependencies": {
