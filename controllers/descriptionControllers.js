@@ -48,4 +48,30 @@ async function deleteDescriptions(req, res) {
   }
 }
 
-module.exports = { getDescriptionById, createDescription, deleteDescriptions };
+async function deleteDescriptionById(req, res) {
+    try {
+      const { id } = req.params;
+      const deletedRowCount = await descriptionModel.deleteDescriptionById(
+        id
+      );
+      if (deletedRowCount > 0) {
+        res.status(200).json({
+          message: `Successfully deleted ${deletedRowCount} descriptions.`,
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "No description found with this Id." });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error);
+    }
+}
+
+module.exports = {
+  getDescriptionById,
+  createDescription,
+  deleteDescriptions,
+  deleteDescriptionById,
+};

@@ -4,6 +4,7 @@ const descriptionController = require('../controllers/descriptionControllers');
 
 router.get('/:id', descriptionController.getDescriptionById);
 router.post('/:userId', descriptionController.createDescription);
-router.delete('/:userId', descriptionController.deleteDescriptions);
+router.delete('/user/:userId', descriptionController.deleteDescriptions);
+router.delete(`/:id`, descriptionController.deleteDescriptionById);
 
 module.exports = router;

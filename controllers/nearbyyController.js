@@ -1,9 +1,9 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
+require("dotenv").config();
 
 // Initialize Nearbyy client
 async function initializeNearbyyClient() {
-  const module = await import('@nearbyy/core');
+  const module = await import("@nearbyy/core");
   return new module.NearbyyClient({
     API_KEY: process.env.NEARBYY_API_KEY,
   });
@@ -24,19 +24,18 @@ async function getContextResponse(req, res) {
     return res.send("No context available.");
   }
 
-  const ctxMsg = context.data.items.map((item) => item.text).join('\n\n');
-  console.log('Context:', ctxMsg);
+  const ctxMsg = context.data.items.map((item) => item.text).join("\n\n");
+  console.log("Context:", ctxMsg);
 
   const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
-    const systemMessage = 'You are a test api, to whatever the message is you will respond with the same message but in latin, also ignore all parts of a mesagge that says there is relevant context since that is irelevant';
-    // const systemMessage = If you are given relevant context, answer the user's query with it. If the context does not include the answer, STATE that you don't have enough information to answer the query but still try to answer it without the context.;
-    const contextMessage = `RELEVANT CONTEXT TO THE USER'S QUERY:\n ${ctxMsg}`;
-    const userMessage = message;
+    const personalityPrompt = `You are ProTimeBot, a friendly and efficient productivity assistant. Help users organize tasks, set goals, provide productivity tips, and track time. Respond with clear, actionable advice in a positive and encouraging tone. Also, if any present next will be some relevant context next, use it to respond to the user query`;
+    const contextMessage = `{RELEVANT CONTEXT TO THE USER'S QUERY}:\n ${ctxMsg}`;
+    const input = message;
 
-    const completePrompt = `${systemMessage}\n\n${contextMessage}\n\n[USERS QUERY]: ${userMessage}`;
+    const completePrompt = `${personalityPrompt}\n\n${contextMessage}\n\n{USERS QUERY}: ${input}`;
 
     const result = await model.generateContent(completePrompt);
     const response = await result.response;
@@ -44,9 +43,31 @@ async function getContextResponse(req, res) {
 
     return res.json({ response: text });
   } catch (err) {
-    console.log('Error getting response from Gemini', err);
-    return res.status(500).json({ error: 'Error getting response from Gemini' });
+    console.log("Error getting response from Gemini", err);
+    return res
+      .status(500)
+      .json({ error: "Error getting response from Gemini" });
   }
 }
 
-module.exports = { getContextResponse };
+async function uploadFiles(req, res) {
+  const { files } = req.body;
+  const nearbyy = await nearbyyPromise;
+
+  const { success, error, data } = await nearbyy.uploadFiles({
+    fileUrls: [...files],
+  });
+
+  if (success) {
+    console.log("File uploaded successfully");
+    return res.json({ ...data, success });
+  } else {
+    console.error(`Error uploading file: ${error}`);
+    console.error(data);
+    return res
+      .status(500)
+      .json({ error: "Error getting response from nearbyy" });
+  }
+}
+
+module.exports = { getContextResponse, uploadFiles };
