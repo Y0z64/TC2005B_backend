@@ -3,12 +3,23 @@ const db = require("../config/db");
 const getDescriptionById = async (id) => {
   try {
     const query =
-      "SELECT U.name, d.description FROM users U JOIN description d ON U.id = d.user_id WHERE U.id = $1;";
+      "SELECT U.name, d.description, d.prescription FROM users U JOIN description d ON U.id = d.user_id WHERE U.id = $1;";
     const { rows } = await db.query(query, [id]);
     return rows;
   } catch (error) {
     console.log(error);
     return { message: "An error occurred while fetching the description" };
+  }
+};
+
+const deleteDescriptionsByUserId = async (userId) => {
+  try {
+    const query = "DELETE FROM description WHERE user_id = $1;";
+    const { rowCount } = await db.query(query, [userId]);
+    return rowCount;
+  } catch (error) {
+    console.log(error);
+    return { message: "An error occurred while deleting the descriptions" };
   }
 };
 
@@ -27,4 +38,8 @@ const createDescription = async (description, prescription, userId) => {
   }
 };
 
-module.exports = { getDescriptionById, createDescription };
+module.exports = {
+  getDescriptionById,
+  createDescription,
+  deleteDescriptionsByUserId,
+};

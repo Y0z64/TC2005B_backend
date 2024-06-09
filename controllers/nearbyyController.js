@@ -31,9 +31,9 @@ async function getContextResponse(req, res) {
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   try {
-    const systemMessage = 'You are a professional bodybuilding trainer. Your task is to help achieve insane gains. Remember, "To get insane gains, first you have to be insane." Use information from the provided context to give more accurate information';
+    const systemMessage = 'You are a test api, to whatever the message is you will respond with the same message but in latin, also ignore all parts of a mesagge that says there is relevant context since that is irelevant';
     // const systemMessage = If you are given relevant context, answer the user's query with it. If the context does not include the answer, STATE that you don't have enough information to answer the query but still try to answer it without the context.;
-    const contextMessage = `RELEVANT CONTEXT TO THE USER'S QUERY]:\n ${ctxMsg}`;
+    const contextMessage = `RELEVANT CONTEXT TO THE USER'S QUERY:\n ${ctxMsg}`;
     const userMessage = message;
 
     const completePrompt = `${systemMessage}\n\n${contextMessage}\n\n[USERS QUERY]: ${userMessage}`;
