@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const descriptionRoutes = require("./routes/descriptionRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes")
 const chatOpenRoutes = require("./routes/chatOpenRoutes")
+const nearbyyRouter = require("./routes/nearbyyRoutes")
 
 //express functions
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use("/users", userRoutes);
 app.use("/description", descriptionRoutes);
 app.use("/chat", chatOpenRoutes);
 app.use("/feedback", feedbackRoutes);
+app.use("/nearbyy", nearbyyRouter)
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
